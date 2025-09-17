@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Laporan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            transition: width 0.3s ease-in-out;
+        }
+
+        .report-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .report-card .icon-box {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-card .icon-box i {
+            font-size: 1.5rem;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex min-h-screen">
+
+    <aside id="sidebar" class="w-64 bg-gray-800 text-white flex flex-col transition-all duration-300">
+        <div class="p-6 text-2xl font-bold flex items-center justify-center">
+            <i class="fas fa-campground text-green-500 mr-2"></i>
+            <span id="brand-name">CampGear</span>
+        </div>
+        <nav class="flex-1 mt-8">
+            <ul class="space-y-2">
+                <li><a href="#" class="flex items-center py-2.5 px-6 hover:bg-gray-700 transition duration-200"><i class="fas fa-tachometer-alt mr-4"></i>Dashboard</a></li>
+                <li><a href="#" class="flex items-center py-2.5 px-6 hover:bg-gray-700 transition duration-200"><i class="fas fa-box-open mr-4"></i>Manajemen Produk</a></li>
+                <li id="pesanan-menu" class="relative">
+                    <a href="#" class="flex items-center justify-between py-2.5 px-6 hover:bg-gray-700 transition duration-200">
+                        <span><i class="fas fa-calendar-alt mr-4"></i>Manajemen Pesanan</span>
+                        <i id="pesanan-arrow" class="fas fa-chevron-down text-sm transition-transform duration-300"></i>
+                    </a>
+                    <ul id="pesanan-child-nav" class="bg-gray-700 mx-2 rounded-b-lg hidden">
+                        <li><a href="siap-ambil.html" class="flex items-center py-2 px-6 text-sm hover:bg-gray-600 transition duration-200">Siap Diambil</a></li>
+                        <li><a href="sedang-disewa.html" class="flex items-center py-2 px-6 text-sm hover:bg-gray-600 transition duration-200">Sedang Disewa</a></li>
+                        <li><a href="sudah-dikembalikan.html" class="flex items-center py-2 px-6 text-sm hover:bg-gray-600 transition duration-200">Sudah Dikembalikan</a></li>
+                        <li><a href="pengembalian-terlambat.html" class="flex items-center py-2 px-6 text-sm hover:bg-gray-600 transition duration-200">Pengembalian Terlambat</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="flex items-center py-2.5 px-6 hover:bg-gray-700 transition duration-200"><i class="fas fa-users-cog mr-4"></i>Manajemen Pengguna</a></li>
+                <li><a href="#" class="flex items-center py-2.5 px-6 bg-gray-700 rounded-lg mx-2 text-green-400 font-semibold transition duration-200"><i class="fas fa-chart-line mr-4"></i>Laporan</a></li>
+            </ul>
+        </nav>
+        <div class="mt-auto p-4 border-t border-gray-700">
+            <a href="#" class="flex items-center py-2.5 px-4 text-sm hover:bg-gray-700 rounded transition duration-200"><i class="fas fa-sign-out-alt mr-4"></i>Keluar</a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow-md p-4 flex justify-between items-center">
+            <button id="sidebar-toggle-btn" class="text-gray-600 focus:outline-none"><i class="fas fa-bars text-xl"></i></button>
+            <div class="flex items-center space-x-4">
+                <div class="relative"><button class="text-gray-600 hover:text-gray-800"><i class="fas fa-bell text-lg"></i></button><span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span></div>
+                <div class="relative"><button class="flex items-center space-x-2 focus:outline-none"><img src="https://ui-avatars.com/api/?name=Admin&background=10b981&color=fff" alt="Admin" class="w-8 h-8 rounded-full"><span class="font-medium text-gray-800 hidden md:inline">Admin</span></button></div>
+            </div>
+        </header>
+
+        <main class="flex-1 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Laporan</h1>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Filter Laporan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label for="start-date" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
+                        <input type="date" id="start-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div>
+                        <label for="end-date" class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
+                        <input type="date" id="end-date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-indigo-600 text-white font-medium py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors">Tampilkan Laporan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="report-card">
+                    <div class="icon-box bg-green-500">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Total Pendapatan</p>
+                        <p class="text-2xl font-bold text-gray-900">Rp 12.500.000</p>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <div class="icon-box bg-blue-500">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Jumlah Pesanan</p>
+                        <p class="text-2xl font-bold text-gray-900">75</p>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <div class="icon-box bg-yellow-500">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Produk Terlaris</p>
+                        <p class="text-lg font-bold text-gray-900">Tenda Kapasitas 4</p>
+                    </div>
+                </div>
+                <div class="report-card">
+                    <div class="icon-box bg-red-500">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Pesanan Terlambat</p>
+                        <p class="text-2xl font-bold text-gray-900">4</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Ringkasan Transaksi Terakhir</h2>
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3">ID Pesanan</th>
+                            <th scope="col" class="px-6 py-3">Nama Pelanggan</th>
+                            <th scope="col" class="px-6 py-3">Tanggal Sewa</th>
+                            <th scope="col" class="px-6 py-3">Total Biaya</th>
+                            <th scope="col" class="px-6 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-6 py-4">#CG-013</td>
+                            <td class="px-6 py-4">Bayu Nugroho</td>
+                            <td class="px-6 py-4">07/09/25</td>
+                            <td class="px-6 py-4">Rp 400.000</td>
+                            <td class="px-6 py-4"><span class="bg-red-200 text-red-800 text-xs font-medium px-2 py-0.5 rounded-full">Terlambat</span></td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-6 py-4">#CG-005</td>
+                            <td class="px-6 py-4">Rio Pradana</td>
+                            <td class="px-6 py-4">24/09/25</td>
+                            <td class="px-6 py-4">Rp 280.000</td>
+                            <td class="px-6 py-4"><span class="bg-yellow-200 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded-full">Menunggu</span></td>
+                        </tr>
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-6 py-4">#CG-001</td>
+                            <td class="px-6 py-4">Budi Santoso</td>
+                            <td class="px-6 py-4">10/09/25</td>
+                            <td class="px-6 py-4">Rp 450.000</td>
+                            <td class="px-6 py-4"><span class="bg-green-200 text-green-800 text-xs font-medium px-2 py-0.5 rounded-full">Selesai</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // JavaScript untuk sidebar
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+        const brandName = document.getElementById('brand-name');
+        const pesananMenu = document.getElementById('pesanan-menu');
+        const pesananChildNav = document.getElementById('pesanan-child-nav');
+        const pesananArrow = document.getElementById('pesanan-arrow');
+
+        sidebarToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('w-64');
+            sidebar.classList.toggle('w-16');
+
+            const links = sidebar.querySelectorAll('a span');
+            links.forEach(link => {
+                link.classList.toggle('hidden');
+            });
+            brandName.classList.toggle('hidden');
+        });
+
+        pesananMenu.addEventListener('click', () => {
+            pesananChildNav.classList.toggle('hidden');
+            pesananArrow.classList.toggle('rotate-180');
+        });
+    </script>
+</body>
+</html>

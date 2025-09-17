@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampGear Rentals - Sewa Perlengkapan Camping Terlengkap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .gradient-bg {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .hero-gradient-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 5;
+        }
+        
+        .contact-icon-card {
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+            width: 100%;
+            height: 120px;
+            transition: transform 0.3s ease;
+        }
+        
+        .contact-icon-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .category-icon {
+            transition: all 0.3s ease;
+            filter: brightness(0) invert(0.4);
+        }
+        
+        .category-item:hover .category-icon {
+            filter: brightness(0) invert(0.7) sepia(1) hue-rotate(70deg) saturate(5);
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+        
+        .sticky-header.scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: #16a34a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu {
+            transition: all 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .mobile-menu.open {
+            max-height: 300px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="sticky-header bg-white">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="#" class="text-green-600 font-bold text-2xl flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Beranda</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Alat</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Paket</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Tentang Kami</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Kontak</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600">
+                    <i class="fas fa-search text-lg"></i>
+                </a>
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600 relative">
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </a>
+                <a href="#" class="hidden md:block bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    Masuk
+                </a>
+                <button id="menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-white shadow-md">
+            <div class="container mx-auto px-6 py-3">
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Beranda</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Alat</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Paket</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Tentang Kami</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Kontak</a>
+                <div class="flex justify-between py-4">
+                    <a href="#" class="text-gray-600 hover:text-green-600">
+                        <i class="fas fa-search text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                    <a href="#" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                        Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="relative bg-center bg-cover h-screen" style="background-image: url('https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <div class="hero-gradient-overlay"></div>
+        <div class="container mx-auto px-6 h-full flex items-center justify-center relative z-10 text-white text-center">
+            <div class="max-w-3xl">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-6 animate-fade-in">Jelajahi Alam Terbuka</h1>
+                <p class="text-xl md:text-2xl max-w-2xl mx-auto mb-10">Sewa perlengkapan camping berkualitas tinggi untuk petualangan Anda berikutnya. Tenda, sleeping bag, alat masak, dan banyak lagi.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#" class="bg-green-600 text-white font-bold py-4 px-8 rounded-full hover:bg-green-700 transition duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-search mr-2"></i> Cari Alat
+                    </a>
+                    <a href="#" class="bg-white bg-opacity-20 text-white font-bold py-4 px-8 rounded-full hover:bg-opacity-30 transition duration-300 transform hover:-translate-y-1 backdrop-blur-sm">
+                        <i class="fas fa-info-circle mr-2"></i> Pelajari Lebih Lanjut
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+            <a href="#categories" class="text-white text-4xl">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <section id="categories" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">Jelajahi Kategori</h2>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto mb-10">Temukan segala kebutuhan camping Anda dalam berbagai kategori perlengkapan</p>
+            <div class="flex space-x-6 overflow-x-auto no-scrollbar py-4 pb-6 justify-center">
+                
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/284/284488.png" alt="Tents" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Tenda</span>
+                </a>
+                
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2974/2974488.png" alt="Sleeping Bags" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Sleeping Bag</span>
+                </a>
+
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2933/2933245.png" alt="Cooking Gear" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Alat Masak</span>
+                </a>
+
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3097/3097003.png" alt="Backpacks" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Ransel</span>
+                </a>
+
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Campfire Gear" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Perapian</span>
+                </a>
+
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/814/814513.png" alt="Lighting" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Penerangan</span>
+                </a>
+
+                <a href="#" class="category-item flex flex-col items-center flex-shrink-0 group w-24">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 group-hover:border-green-500 transition-all duration-300 shadow-sm">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3048/3048138.png" alt="Water Bottle" class="w-10 h-10 category-icon">
+                    </div>
+                    <span class="mt-3 text-sm font-medium text-gray-700 group-hover:text-green-600 transition-colors duration-300 text-center">Botol Air</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Rekomendasi Untuk Anda</h2>
+                    <p class="text-gray-600">Perlengkapan camping terpopuler pilihan kami</p>
+                </div>
+                <a href="#" class="hidden md:flex items-center text-green-600 hover:text-green-700 font-medium">
+                    Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                
+                <div class="product-card cursor-pointer bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300" data-product-id="0">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping Otomatis" class="w-full h-48 object-cover">
+                        <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                        <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-25%</span>
+                        <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                            <i class="fas fa-shopping-cart text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Tenda Camping Otomatis 4 Orang Waterproof Double Layer</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-green-600 font-bold text-lg">Rp 120.000</span>
+                                <span class="block text-gray-400 text-sm line-through">Rp 160.000</span>
+                            </div>
+                            <div class="flex items-center text-yellow-400">
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card cursor-pointer bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300" data-product-id="1">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag Ultralight" class="w-full h-48 object-cover">
+                        <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                        <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                            <i class="fas fa-shopping-cart text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-green-600 font-bold text-lg">Rp 65.000</span>
+                            </div>
+                            <div class="flex items-center text-yellow-400">
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.9</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card cursor-pointer bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300" data-product-id="2">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80" alt="Kompor Portable Gas" class="w-full h-48 object-cover">
+                        <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                        <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-15%</span>
+                        <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                            <i class="fas fa-shopping-cart text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Kompor Portable Mini Gas Camping Hiking Outdoor</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-green-600 font-bold text-lg">Rp 85.000</span>
+                                <span class="block text-gray-400 text-sm line-through">Rp 100.000</span>
+                            </div>
+                            <div class="flex items-center text-yellow-400">
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card cursor-pointer bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300" data-product-id="3">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1543489822-c49534f4ad4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1096&q=80" alt="Lampu Tenda LED" class="w-full h-48 object-cover">
+                        <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                        <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                            <i class="fas fa-shopping-cart text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Lampu Tenda Gantung Rechargeable LED USB</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-green-600 font-bold text-lg">Rp 30.000</span>
+                            </div>
+                            <div class="flex items-center text-yellow-400">
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="mt-8 flex md:hidden justify-center">
+                <a href="#" class="flex items-center text-green-600 hover:text-green-700 font-medium">
+                    Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 text-center">Hubungi Kami</h2>
+            <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">Punya pertanyaan? Jangan ragu untuk menghubungi kami. Tim kami siap membantu Anda.</p>
+            <div class="flex flex-col lg:flex-row gap-10">
+                <div class="w-full lg:w-1/2 rounded-xl overflow-hidden shadow-lg">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.52906471852!2d106.824248714769!3d-6.194723195514619!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f44ac84b2e67%3A0x6e2621f8a851e39a!2sMonas!5e0!3m2!1sid!2sid!4v1628173570000!5m2!1sid!2sid" width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" class="rounded-xl"></iframe>
+                </div>
+                <div class="w-full lg:w-1/2">
+                    
+                    <form action="#" method="POST" class="bg-gray-50 p-8 rounded-xl shadow-md">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                                <input type="text" id="name" name="name" placeholder="Nama Anda" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" required>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="email" name="email" placeholder="email@contoh.com" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" required>
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subjek</label>
+                            <input type="text" id="subject" name="subject" placeholder="Subjek pesan" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Pesan</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Tulis pesan Anda di sini..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition duration-300 flex items-center justify-center">
+                            <i class="fas fa-paper-plane mr-2"></i> Kirim Pesan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-xl mb-4 text-white flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear Rentals
+                </h4>
+                <p class="text-sm mb-4">Menyediakan perlengkapan camping berkualitas untuk petualangan Anda.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Menu</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Beranda</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Alat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Layanan</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Sewa Alat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket Camping</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Pengiriman</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Bantuan</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Kontak</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mr-3 mt-1 text-green-500"></i>
+                        <span>Jl. Camping No. 123, Jakarta Selatan, Indonesia</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt mr-3 text-green-500"></i>
+                        <span>+62 21 123 4567</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-green-500"></i>
+                        <span>info@campgear.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <div id="product-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-[99] hidden">
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row transform scale-95 opacity-0 transition-all duration-300" id="modal-content">
+            <div class="md:w-1/2 p-6 flex items-center justify-center relative">
+                <img id="modal-product-image" src="" alt="Gambar Produk" class="w-full h-80 object-cover rounded-lg shadow-md">
+            </div>
+            
+            <div class="md:w-1/2 p-6 flex flex-col justify-between">
+                <div>
+                    <button id="close-modal-btn-top" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 focus:outline-none">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                    <h3 id="modal-product-name" class="text-2xl md:text-3xl font-bold text-gray-800 mb-2"></h3>
+                    <div class="flex items-center text-yellow-500 mb-4">
+                        <div id="modal-product-stars"></div>
+                        <span id="modal-product-rating" class="text-gray-600 ml-2"></span>
+                    </div>
+                    <div class="mb-4">
+                        <span id="modal-product-price" class="text-green-600 font-bold text-2xl"></span>
+                        <span id="modal-product-old-price" class="text-gray-400 text-sm line-through ml-2 hidden"></span>
+                        <span id="modal-product-discount" class="text-red-500 text-sm ml-2 font-semibold hidden"></span>
+                    </div>
+                    <p id="modal-product-description" class="text-gray-700 mb-6 leading-relaxed"></p>
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-gray-600 font-semibold">Kuantitas:</span>
+                        <div class="flex items-center border border-gray-300 rounded-lg">
+                            <button id="qty-minus" class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-l-lg">-</button>
+                            <span id="qty-value" class="px-4 py-1">1</span>
+                            <button id="qty-plus" class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-r-lg">+</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 mt-6">
+                    <a href="#" class="bg-green-600 text-white font-bold py-3 px-6 rounded-full flex-1 text-center hover:bg-green-700 transition">
+                        <i class="fas fa-shopping-cart mr-2"></i> Tambah ke Keranjang
+                    </a>
+                    <button id="close-modal-btn" class="bg-gray-200 text-gray-800 font-bold py-3 px-6 rounded-full flex-1 hover:bg-gray-300 transition">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" id="back-to-top" class="back-to-top hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script>
+        // Data produk dummy untuk demonstrasi
+        const products = [
+            {
+                name: "Tenda Camping Otomatis 4 Orang Waterproof Double Layer",
+                image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                description: "Tenda camping praktis dengan sistem otomatis, ideal untuk 4 orang. Terbuat dari bahan waterproof dengan lapisan ganda, menjamin kenyamanan dan perlindungan dari cuaca. Mudah dipasang dan dibongkar, cocok untuk petualang pemula hingga profesional.",
+                price: "Rp 120.000",
+                oldPrice: "Rp 160.000",
+                discount: "-25%",
+                rating: 4.8,
+                reviewCount: 120
+            },
+            {
+                name: "Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin",
+                image: "https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                description: "Sleeping bag ultralight yang ringan dan ringkas, sempurna untuk hiking dan backpacking. Desain khusus untuk menjaga kehangatan di suhu dingin. Bahan berkualitas tinggi memastikan tidur nyenyak di alam terbuka.",
+                price: "Rp 65.000",
+                oldPrice: null,
+                discount: null,
+                rating: 4.9,
+                reviewCount: 95
+            },
+            {
+                name: "Kompor Portable Mini Gas Camping Hiking Outdoor",
+                image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80",
+                description: "Kompor gas portable mini yang ringkas dan efisien. Ideal untuk memasak saat camping atau hiking. Dilengkapi dengan kontrol api yang stabil dan mudah digunakan. Tidak termasuk tabung gas.",
+                price: "Rp 85.000",
+                oldPrice: "Rp 100.000",
+                discount: "-15%",
+                rating: 4.7,
+                reviewCount: 210
+            },
+            {
+                name: "Lampu Tenda Gantung Rechargeable LED USB",
+                image: "https://images.unsplash.com/photo-1543489822-c49534f4ad4a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1096&q=80",
+                description: "Lampu tenda LED serbaguna yang dapat digantung atau diletakkan. Dilengkapi baterai isi ulang via USB, sangat praktis. Memiliki beberapa mode pencahayaan untuk kebutuhan berbeda.",
+                price: "Rp 30.000",
+                oldPrice: null,
+                discount: null,
+                rating: 4.5,
+                reviewCount: 88
+            },
+            {
+                name: "Matras Angin Single Inflatable Camping Air Bed",
+                image: "https://images.unsplash.com/photo-1504280490360-1c1a3d15df75?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80",
+                description: "Matras angin single yang nyaman untuk tidur di alam bebas. Dapat dipompa dengan mudah dan kempes dengan cepat. Ringan dan ringkas, menghemat ruang dalam tas ransel Anda.",
+                price: "Rp 75.000",
+                oldPrice: "Rp 83.000",
+                discount: "-10%",
+                rating: 4.6,
+                reviewCount: 55
+            }
+        ];
+
+        const productCards = document.querySelectorAll('.product-card');
+        const modal = document.getElementById('product-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const closeModalBtnTop = document.getElementById('close-modal-btn-top');
+        const qtyMinusBtn = document.getElementById('qty-minus');
+        const qtyPlusBtn = document.getElementById('qty-plus');
+        const qtyValueSpan = document.getElementById('qty-value');
+
+        let currentQty = 1;
+
+        // Fungsi untuk membuat bintang rating
+        function createStarRating(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            let starsHtml = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<i class="fas fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+            }
+            return starsHtml;
+        }
+
+        // Fungsi untuk menampilkan modal dengan data produk
+        function showModal(productIndex) {
+            const product = products[productIndex];
+            
+            document.getElementById('modal-product-image').src = product.image;
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-rating').textContent = `${product.rating} (${product.reviewCount} ulasan)`;
+            document.getElementById('modal-product-description').textContent = product.description;
+            document.getElementById('modal-product-price').textContent = product.price;
+
+            document.getElementById('modal-product-stars').innerHTML = createStarRating(product.rating);
+
+            const oldPriceElement = document.getElementById('modal-product-old-price');
+            if (product.oldPrice) {
+                oldPriceElement.textContent = product.oldPrice;
+                oldPriceElement.classList.remove('hidden');
+            } else {
+                oldPriceElement.classList.add('hidden');
+            }
+
+            const discountElement = document.getElementById('modal-product-discount');
+            if (product.discount) {
+                discountElement.textContent = product.discount;
+                discountElement.classList.remove('hidden');
+            } else {
+                discountElement.classList.add('hidden');
+            }
+
+            currentQty = 1;
+            qtyValueSpan.textContent = currentQty;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        // Fungsi untuk menyembunyikan modal
+        function hideModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Event listener untuk setiap kartu produk
+        productCards.forEach((card, index) => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('button')) {
+                    return;
+                }
+                showModal(index);
+            });
+        });
+
+        // Event listener untuk tombol tutup modal
+        closeModalBtn.addEventListener('click', hideModal);
+        closeModalBtnTop.addEventListener('click', hideModal);
+
+        // Event listener untuk menutup modal saat mengklik di luar modal
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+
+        // Event listener untuk tombol kuantitas
+        qtyPlusBtn.addEventListener('click', () => {
+            currentQty++;
+            qtyValueSpan.textContent = currentQty;
+        });
+
+        qtyMinusBtn.addEventListener('click', () => {
+            if (currentQty > 1) {
+                currentQty--;
+                qtyValueSpan.textContent = currentQty;
+            }
+        });
+
+        // Event listener untuk header sticky dan back-to-top button
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.sticky-header');
+            const backToTopBtn = document.getElementById('back-to-top');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                backToTopBtn.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+
+        // Event listener untuk menu mobile
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Event listener untuk back-to-top button
+        document.getElementById('back-to-top').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+</body>
+</html>

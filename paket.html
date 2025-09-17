@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paket Camping - CampGear Rentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f7fafc;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .package-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+        
+        .sticky-header.scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: #16a34a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu {
+            transition: all 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .mobile-menu.open {
+            max-height: 300px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: zoomIn 0.3s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+        
+        .modal.open .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        /* New styles for improved main content */
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: #16a34a;
+            border-radius: 2px;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .package-image {
+            transition: transform 0.5s ease;
+        }
+        
+        .package-card:hover .package-image {
+            transform: scale(1.05);
+        }
+        
+        .cta-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .cta-button:hover:after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            transition: transform 0.2s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        .package-benefit {
+            display: flex;
+            align-items: center;
+            background: #f0fdf4;
+            color: #166534;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .package-benefit i {
+            margin-right: 0.5rem;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="sticky-header bg-white">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="index.html" class="text-green-600 font-bold text-2xl flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Beranda</a>
+                <a href="alat.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Alat</a>
+                <a href="paket.html" class="text-green-600 font-bold transition-colors">Paket</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Tentang Kami</a>
+                <a href="#" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Kontak</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600">
+                    <i class="fas fa-search text-lg"></i>
+                </a>
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600 relative">
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </a>
+                <a href="#" class="hidden md:block bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    Masuk
+                </a>
+                <button id="menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-white shadow-md">
+            <div class="container mx-auto px-6 py-3">
+                <a href="index.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Beranda</a>
+                <a href="alat.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Alat</a>
+                <a href="paket.html" class="block py-3 text-green-600 font-bold border-b border-gray-100">Paket</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Tentang Kami</a>
+                <a href="#" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Kontak</a>
+                <div class="flex justify-between py-4">
+                    <a href="#" class="text-gray-600 hover:text-green-600">
+                        <i class="fas fa-search text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                    <a href="#" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                        Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10 min-h-screen">
+        <!-- Hero Section -->
+        <div class="hero-section p-8 mb-12 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Pilihan Paket Camping Terbaik</h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">Temukan paket camping yang sesuai dengan kebutuhan petualangan Anda. Lebih hemat, lebih praktis!</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <div class="package-benefit">
+                    <i class="fas fa-check-circle"></i> Perlengkapan Lengkap
+                </div>
+                <div class="package-benefit">
+                    <i class="fas fa-check-circle"></i> Harga Terjangkau
+                </div>
+                <div class="package-benefit">
+                    <i class="fas fa-check-circle"></i> Kualitas Terjamin
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <!-- Package Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="package-list">
+            
+            <!-- Paket Solo Explorer -->
+            <div class="package-card bg-white rounded-2xl overflow-hidden flex flex-col justify-between group">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1533221915998-348128532f01?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Paket Solo Explorer" class="w-full h-56 object-cover package-image">
+                    <span class="absolute top-4 left-4 bg-green-600 text-white text-sm font-bold px-3 py-1 rounded-full">Hemat 15%</span>
+                    <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button class="bg-white text-green-600 px-4 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                            Lihat Detail
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Paket Solo Explorer</h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-1">Paket lengkap untuk petualang solo. Ringan, ringkas, dan efisien.</p>
+                    
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="package-benefit"><i class="fas fa-user"></i> 1 Orang</span>
+                            <span class="package-benefit"><i class="fas fa-weight"></i> Ringan</span>
+                            <span class="package-benefit"><i class="fas fa-bolt"></i> Praktis</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Tenda Single</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Sleeping Bag Ultralight</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Kompor Portable Mini</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Lampu Senter</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Lampu Senter</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <div class="flex items-baseline justify-between mb-4">
+                            <div>
+                                <span class="text-green-600 font-bold text-3xl">Rp 150.000</span>
+                                <span class="block text-gray-400 text-sm line-through">Rp 175.000</span>
+                            </div>
+                            <span class="text-gray-500 text-sm">/ 3 hari</span>
+                        </div>
+                        <a href="#" class="open-order-modal block w-full text-center bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition cta-button">
+                            <i class="fas fa-shopping-cart mr-2"></i> Sewa Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paket Couple Getaway -->
+            <div class="package-card bg-white rounded-2xl overflow-hidden flex flex-col justify-between group">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1549880628-98e3b3c373a6?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Paket Couple Getaway" class="w-full h-56 object-cover package-image">
+                    <span class="absolute top-4 left-4 bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">Paling Populer</span>
+                    <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button class="bg-white text-green-600 px-4 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                            Lihat Detail
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Paket Couple </h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-1">Paket romantis untuk dua orang. Semua yang Anda butuhkan untuk liburan di alam.</p>
+                    
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="package-benefit"><i class="fas fa-heart"></i> 2 Orang</span>
+                            <span class="package-benefit"><i class="fas fa-utensils"></i> Lengkap</span>
+                            <span class="package-benefit"><i class="fas fa-moon"></i> Romantis</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Tenda 2 Orang</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>2 Sleeping Bag</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Matras Ganda</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Alat Masak Lengkap</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Lampu Tenda</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <div class="flex items-baseline justify-between mb-4">
+                            <div>
+                                <span class="text-green-600 font-bold text-3xl">Rp 250.000</span>
+                                <span class="block text-gray-400 text-sm line-through">Rp 295.000</span>
+                            </div>
+                            <span class="text-gray-500 text-sm">/ 3 hari</span>
+                        </div>
+                        <a href="#" class="open-order-modal block w-full text-center bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition cta-button">
+                            <i class="fas fa-shopping-cart mr-2"></i> Sewa Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Paket Keluarga Bahagia -->
+            <div class="package-card bg-white rounded-2xl overflow-hidden flex flex-col justify-between group">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1525992644280-91a1df27f7cf?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Paket Keluarga" class="w-full h-56 object-cover package-image">
+                    <span class="absolute top-4 left-4 bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">Best Value</span>
+                    <div class="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button class="bg-white text-green-600 px-4 py-2 rounded-full font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                            Lihat Detail
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Paket Keluarga </h3>
+                    <p class="text-gray-600 text-sm mb-4 flex-1">Solusi praktis untuk camping bersama keluarga. Semuanya siap, tinggal bawa makanan.</p>
+                    
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="package-benefit"><i class="fas fa-users"></i> 4-6 Orang</span>
+                            <span class="package-benefit"><i class="fas fa-home"></i> Lengkap</span>
+                            <span class="package-benefit"><i class="fas fa-child"></i> Keluarga</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Tenda Besar (4-6 orang)</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>4 Sleeping Bag & Matras</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Set Kompor & Panci</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Lampu & Senter</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                <span>Meja & Kursi Lipat</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <div class="flex items-baseline justify-between mb-4">
+                            <div>
+                                <span class="text-green-600 font-bold text-3xl">Rp 550.000</span>
+                                <span class="block text-gray-400 text-sm line-through">Rp 650.000</span>
+                            </div>
+                            <span class="text-gray-500 text-sm">/ 3 hari</span>
+                        </div>
+                        <a href="#" class="open-order-modal block w-full text-center bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition cta-button">
+                            <i class="fas fa-shopping-cart mr-2"></i> Sewa Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-12 mt-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-xl mb-4 text-white flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear Rentals
+                </h4>
+                <p class="text-sm mb-4">Menyediakan perlengkapan camping berkualitas untuk petualangan Anda.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Menu</h4>
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Beranda</a></li>
+                    <li><a href="alat.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Alat</a></li>
+                    <li><a href="paket.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Layanan</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Sewa Alat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket Camping</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Pengiriman</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Bantuan</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Kontak</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mr-3 mt-1 text-green-500"></i>
+                        <span>Jl. Camping No. 123, Jakarta Selatan, Indonesia</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt mr-3 text-green-500"></i>
+                        <span>+62 21 123 4567</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-green-500"></i>
+                        <span>info@campgear.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    
+    <a href="#" id="back-to-top" class="back-to-top hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Modal code remains the same -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-order-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Formulir Pemesanan</h2>
+            <form id="order-form" class="space-y-4">
+                <div>
+                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="nik" class="block text-sm font-medium text-gray-700">NIK (Nomor Induk Kependudukan)</label>
+                    <input type="text" id="nik" name="nik" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="jaminan" class="block text-sm font-medium text-gray-700">Pilih Jaminan</label>
+                    <select id="jaminan" name="jaminan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="ktp">KTP</option>
+                        <option value="sim">SIM</option>
+                        <option value="kartu-pelajar">Kartu Pelajar</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tanggal-pengambilan" class="block text-sm font-medium text-gray-700">Tanggal Pengambilan</label>
+                    <input type="date" id="tanggal-pengambilan" name="tanggal-pengambilan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
+                        Lanjutkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="pickup-modal" class="modal">
+        <div class="modal-content text-center">
+            <button id="close-pickup-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <i class="fas fa-check-circle text-6xl text-green-500 mb-4 animate-bounce"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Pesanan Anda Berhasil Dibuat!</h2>
+            <p class="text-gray-600 mb-6">Berikut adalah cara pengambilan pesanan Anda:</p>
+            <div class="space-y-4 text-left">
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">1</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Datang ke Tempat Sewa Kami</h4>
+                        <p class="text-gray-600 text-sm">Datang ke lokasi kami pada tanggal yang sudah Anda pilih.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">2</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Verifikasi Data dan Pembayaran</h4>
+                        <p class="text-gray-600 text-sm">Tunjukkan NIK dan lakukan pembayaran penuh kepada petugas kami.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">3</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Serahkan Jaminan & Ambil Produk</h4>
+                        <p class="text-gray-600 text-sm">Serahkan dokumen jaminan Anda dan nikmati produk sewa kami.</p>
+                    </div>
+                </div>
+            </div>
+            <a href="index.html" class="mt-6 inline-block w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">Kembali ke Beranda</a>
+        </div>
+    </div>
+    
+    <script>
+        // Event listener untuk header sticky dan back-to-top button
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.sticky-header');
+            const backToTopBtn = document.getElementById('back-to-top');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                backToTopBtn.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Event listener untuk menu mobile
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Event listener untuk back-to-top button
+        document.getElementById('back-to-top').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // --- Fungsionalitas Modal ---
+        const openModalBtns = document.querySelectorAll('.open-order-modal');
+        const orderModal = document.getElementById('order-modal');
+        const closeOrderModalBtn = document.getElementById('close-order-modal-btn');
+        const orderForm = document.getElementById('order-form');
+        const pickupModal = document.getElementById('pickup-modal');
+        const closePickupModalBtn = document.getElementById('close-pickup-modal-btn');
+
+        // Fungsi untuk membuka modal
+        function openModal(modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('open');
+            }, 10);
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal(modal) {
+            modal.classList.remove('open');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Buka modal formulir saat tombol "Sewa Paket Ini" diklik
+        openModalBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openModal(orderModal);
+            });
+        });
+
+        // Tutup modal formulir saat tombol "x" diklik
+        closeOrderModalBtn.addEventListener('click', () => {
+            closeModal(orderModal);
+        });
+
+        // Tutup modal notifikasi saat tombol "x" diklik
+        closePickupModalBtn.addEventListener('click', () => {
+            closeModal(pickupModal);
+        });
+
+        // Tutup modal saat mengklik di luar area modal
+        window.addEventListener('click', (e) => {
+            if (e.target === orderModal) {
+                closeModal(orderModal);
+            }
+            if (e.target === pickupModal) {
+                closeModal(pickupModal);
+            }
+        });
+
+        // Tangani pengiriman formulir
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Di sini Anda bisa menambahkan logika validasi atau kirim data ke server
+            // Contoh sederhana: langsung tampilkan modal notifikasi
+            closeModal(orderModal);
+            setTimeout(() => {
+                openModal(pickupModal);
+            }, 300); // Tunda sebentar agar transisi modal pertama selesai
+        });
+    </script>
+</body>
+</html>

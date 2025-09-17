@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Alat Camping - CampGear Rentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .category-filter {
+            transition: all 0.3s ease;
+        }
+        
+        .category-filter.active {
+            background-color: #16a34a;
+            color: white;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .price-slider {
+            -webkit-appearance: none;
+            height: 6px;
+            background: #d1d5db;
+            border-radius: 5px;
+            background-image: linear-gradient(#16a34a, #16a34a);
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+        }
+        
+        .price-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #16a34a;
+            cursor: pointer;
+            box-shadow: 0 0 2px 0 #555;
+        }
+        
+        .price-slider::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #16a34a;
+            cursor: pointer;
+            box-shadow: 0 0 2px 0 #555;
+        }
+        
+        .checkbox:checked {
+            background-color: #16a34a;
+        }
+        
+        .sticky-sidebar {
+            position: sticky;
+            top: 6rem;
+            height: calc(100vh - 8rem);
+            overflow-y: auto;
+        }
+        
+        .sticky-sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .sticky-sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .sticky-sidebar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 900px;
+            width: 90%;
+            position: relative;
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                flex-direction: row;
+            }
+        }
+
+        @keyframes animatetop {
+            from { top: -300px; opacity: 0; }
+            to { top: 0; opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            color: #aaa;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="sticky top-0 bg-white shadow-md z-40">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="index.html" class="text-green-600 font-bold text-2xl flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Beranda</a>
+                <a href="alat.html" class="text-green-600 font-medium transition-colors">Alat</a>
+                <a href="paket.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Paket</a>
+                <a href="tentang.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Tentang Kami</a>
+                <a href="kontak.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Kontak</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600">
+                    <i class="fas fa-search text-lg"></i>
+                </a>
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600 relative">
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </a>
+                <a href="#" class="hidden md:block bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    Masuk
+                </a>
+                <button id="menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <div id="mobile-menu" class="mobile-menu hidden md:hidden bg-white shadow-md">
+            <div class="container mx-auto px-6 py-3">
+                <a href="index.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Beranda</a>
+                <a href="alat.html" class="block py-3 text-green-600 font-medium border-b border-gray-100">Alat</a>
+                <a href="paket.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Paket</a>
+                <a href="tentang.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Tentang Kami</a>
+                <a href="kontak.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Kontak</a>
+                <div class="flex justify-between py-4">
+                    <a href="#" class="text-gray-600 hover:text-green-600">
+                        <i class="fas fa-search text-lg"></i>
+                    </a>
+                    <a href="#" class="text-gray-600 hover:text-green-600 relative">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                    <a href="#" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                        Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <aside class="w-full lg:w-1/4">
+                <div class="bg-white rounded-xl shadow-md p-6 sticky-sidebar">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">Filter</h2>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Cari Alat</label>
+                        <div class="relative">
+                            <input type="text" placeholder="Nama alat..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-md font-semibold text-gray-800 mb-3">Kategori</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Tenda</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Sleeping Bag</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Alat Masak</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Ransel</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Perapian</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Penerangan</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-md font-semibold text-gray-800 mb-3">Range Harga</h3>
+                        <input type="range" min="0" max="500000" value="250000" class="price-slider w-full">
+                        <div class="flex justify-between mt-2">
+                            <span class="text-sm text-gray-600">Rp 0</span>
+                            <span class="text-sm text-gray-600">Rp 500.000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-md font-semibold text-gray-800 mb-3">Ketersediaan</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500" checked>
+                                <span class="ml-2 text-gray-700">Tersedia</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">Pre-order</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-md font-semibold text-gray-800 mb-3">Rating</h3>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                </span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="far fa-star text-yellow-400"></i>
+                                    <span class="ml-1">ke atas</span>
+                                </span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="checkbox rounded text-green-600 focus:ring-green-500">
+                                <span class="ml-2 text-gray-700">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="far fa-star text-yellow-400"></i>
+                                    <i class="far fa-star text-yellow-400"></i>
+                                    <span class="ml-1">ke atas</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                        Terapkan Filter
+                    </button>
+                </div>
+            </aside>
+            
+            <div class="w-full lg:w-3/4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Daftar Alat Camping</h1>
+                    
+                    <div class="flex items-center">
+                        <span class="text-sm text-gray-600 mr-3">Urutkan:</span>
+                        <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option>Paling Sesuai</option>
+                            <option>Harga Terendah</option>
+                            <option>Harga Tertinggi</option>
+                            <option>Rating Tertinggi</option>
+                            <option>Paling Baru</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <p class="text-gray-600 mb-8">Temukan berbagai perlengkapan camping berkualitas tinggi untuk petualangan Anda. Semua alat tersedia untuk disewa dengan harga terjangkau.</p>
+                
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <button class="category-filter active bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                        Semua
+                    </button>
+                    <button class="category-filter bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                        Tenda
+                    </button>
+                    <button class="category-filter bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                        Sleeping Bag
+                    </button>
+                    <button class="category-filter bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                        Alat Masak
+                    </button>
+                    <button class="category-filter bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                        Ransel
+                    </button>
+                    <button class="category-filter bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-50">
+                        Lainnya
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="products-grid">
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 1,
+                        name: 'Tenda Camping Otomatis 4 Orang Waterproof Double Layer',
+                        image: 'https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+                        price: 120000,
+                        originalPrice: 160000,
+                        discount: 25,
+                        rating: 4.8,
+                        description: 'Tenda camping praktis yang dapat dipasang secara otomatis, cocok untuk 4 orang. Terbuat dari material tahan air dengan double layer yang memberikan perlindungan ekstra dari cuaca. Ideal untuk petualangan singkat maupun panjang.',
+                        stock: 15
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping Otomatis" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-25%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.8</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Tenda Camping Otomatis 4 Orang Waterproof Double Layer</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 120.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 160.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 2,
+                        name: 'Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin',
+                        image: 'https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+                        price: 65000,
+                        originalPrice: null,
+                        discount: null,
+                        rating: 4.9,
+                        description: 'Sleeping bag ringan dan ringkas, ideal untuk dibawa hiking. Dibuat dengan bahan yang mampu menahan suhu rendah, menjaga Anda tetap hangat sepanjang malam. Desainnya yang portabel memudahkan penyimpanan.',
+                        stock: 20
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag Ultralight" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.9</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 65.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 3,
+                        name: 'Kompor Portable Mini Gas Camping Hiking Outdoor',
+                        image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80',
+                        price: 85000,
+                        originalPrice: 100000,
+                        discount: 15,
+                        rating: 4.7,
+                        description: 'Kompor portable yang ringkas dan mudah dibawa, ideal untuk memasak di luar ruangan. Menggunakan gas kaleng standar, memiliki api yang stabil dan efisien. Cocok untuk solo camping atau kelompok kecil.',
+                        stock: 12
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80" alt="Kompor Portable Gas" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-15%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.7</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Kompor Portable Mini Gas Camping Hiking Outdoor</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 85.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 100.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 1,
+                        name: 'Tenda Camping Otomatis 4 Orang Waterproof Double Layer',
+                        image: 'https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+                        price: 120000,
+                        originalPrice: 160000,
+                        discount: 25,
+                        rating: 4.8,
+                        description: 'Tenda camping praktis yang dapat dipasang secara otomatis, cocok untuk 4 orang. Terbuat dari material tahan air dengan double layer yang memberikan perlindungan ekstra dari cuaca. Ideal untuk petualangan singkat maupun panjang.',
+                        stock: 15
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping Otomatis" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-25%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.8</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Tenda Camping Otomatis 4 Orang Waterproof Double Layer</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 120.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 160.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 2,
+                        name: 'Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin',
+                        image: 'https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+                        price: 65000,
+                        originalPrice: null,
+                        discount: null,
+                        rating: 4.9,
+                        description: 'Sleeping bag ringan dan ringkas, ideal untuk dibawa hiking. Dibuat dengan bahan yang mampu menahan suhu rendah, menjaga Anda tetap hangat sepanjang malam. Desainnya yang portabel memudahkan penyimpanan.',
+                        stock: 20
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag Ultralight" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.9</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 65.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 3,
+                        name: 'Kompor Portable Mini Gas Camping Hiking Outdoor',
+                        image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80',
+                        price: 85000,
+                        originalPrice: 100000,
+                        discount: 15,
+                        rating: 4.7,
+                        description: 'Kompor portable yang ringkas dan mudah dibawa, ideal untuk memasak di luar ruangan. Menggunakan gas kaleng standar, memiliki api yang stabil dan efisien. Cocok untuk solo camping atau kelompok kecil.',
+                        stock: 12
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80" alt="Kompor Portable Gas" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-15%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.7</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Kompor Portable Mini Gas Camping Hiking Outdoor</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 85.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 100.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 1,
+                        name: 'Tenda Camping Otomatis 4 Orang Waterproof Double Layer',
+                        image: 'https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+                        price: 120000,
+                        originalPrice: 160000,
+                        discount: 25,
+                        rating: 4.8,
+                        description: 'Tenda camping praktis yang dapat dipasang secara otomatis, cocok untuk 4 orang. Terbuat dari material tahan air dengan double layer yang memberikan perlindungan ekstra dari cuaca. Ideal untuk petualangan singkat maupun panjang.',
+                        stock: 15
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping Otomatis" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-25%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.8</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Tenda Camping Otomatis 4 Orang Waterproof Double Layer</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 120.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 160.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 2,
+                        name: 'Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin',
+                        image: 'https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+                        price: 65000,
+                        originalPrice: null,
+                        discount: null,
+                        rating: 4.9,
+                        description: 'Sleeping bag ringan dan ringkas, ideal untuk dibawa hiking. Dibuat dengan bahan yang mampu menahan suhu rendah, menjaga Anda tetap hangat sepanjang malam. Desainnya yang portabel memudahkan penyimpanan.',
+                        stock: 20
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag Ultralight" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.9</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 65.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 3,
+                        name: 'Kompor Portable Mini Gas Camping Hiking Outdoor',
+                        image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80',
+                        price: 85000,
+                        originalPrice: 100000,
+                        discount: 15,
+                        rating: 4.7,
+                        description: 'Kompor portable yang ringkas dan mudah dibawa, ideal untuk memasak di luar ruangan. Menggunakan gas kaleng standar, memiliki api yang stabil dan efisien. Cocok untuk solo camping atau kelompok kecil.',
+                        stock: 12
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80" alt="Kompor Portable Gas" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-15%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.7</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Kompor Portable Mini Gas Camping Hiking Outdoor</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 85.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 100.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 1,
+                        name: 'Tenda Camping Otomatis 4 Orang Waterproof Double Layer',
+                        image: 'https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+                        price: 120000,
+                        originalPrice: 160000,
+                        discount: 25,
+                        rating: 4.8,
+                        description: 'Tenda camping praktis yang dapat dipasang secara otomatis, cocok untuk 4 orang. Terbuat dari material tahan air dengan double layer yang memberikan perlindungan ekstra dari cuaca. Ideal untuk petualangan singkat maupun panjang.',
+                        stock: 15
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping Otomatis" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-25%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.8</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Tenda Camping Otomatis 4 Orang Waterproof Double Layer</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 120.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 160.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 2,
+                        name: 'Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin',
+                        image: 'https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+                        price: 65000,
+                        originalPrice: null,
+                        discount: null,
+                        rating: 4.9,
+                        description: 'Sleeping bag ringan dan ringkas, ideal untuk dibawa hiking. Dibuat dengan bahan yang mampu menahan suhu rendah, menjaga Anda tetap hangat sepanjang malam. Desainnya yang portabel memudahkan penyimpanan.',
+                        stock: 20
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag Ultralight" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.9</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Sleeping Bag Ultralight Portable Hiking Camping Musim Dingin</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 65.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer" onclick="openModal({
+                        id: 3,
+                        name: 'Kompor Portable Mini Gas Camping Hiking Outdoor',
+                        image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80',
+                        price: 85000,
+                        originalPrice: 100000,
+                        discount: 15,
+                        rating: 4.7,
+                        description: 'Kompor portable yang ringkas dan mudah dibawa, ideal untuk memasak di luar ruangan. Menggunakan gas kaleng standar, memiliki api yang stabil dan efisien. Cocok untuk solo camping atau kelompok kecil.',
+                        stock: 12
+                    })">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80" alt="Kompor Portable Gas" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">🌟 Star+</span>
+                            <span class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">-15%</span>
+                            <button class="absolute bottom-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-green-500 hover:text-white transition-colors">
+                                <i class="fas fa-shopping-cart text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center text-yellow-400 mb-2">
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star text-sm"></i>
+                                <i class="fas fa-star-half-alt text-sm"></i>
+                                <span class="text-gray-600 ml-1 text-sm">4.7</span>
+                            </div>
+                            <h3 class="text-base font-semibold text-gray-800 line-clamp-2 mb-2">Kompor Portable Mini Gas Camping Hiking Outdoor</h3>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-green-600 font-bold text-lg">Rp 85.000</span>
+                                    <span class="block text-gray-400 text-sm line-through">Rp 100.000</span>
+                                </div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">Tersedia</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center mt-12">
+                    <nav class="flex items-center space-x-2">
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&laquo;</a>
+                        <a href="#" class="px-3 py-1 rounded border border-green-500 bg-green-500 text-white">1</a>
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">2</a>
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">3</a>
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">4</a>
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50">5</a>
+                        <a href="#" class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-50">&raquo;</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-1/2">
+                    <img id="modal-image" src="" alt="Product Image" class="w-full h-auto rounded-lg object-cover mb-4 md:mb-0">
+                </div>
+                <div class="md:w-1/2">
+                    <h2 id="modal-name" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                    <div class="flex items-center text-yellow-400 mb-2">
+                        <span id="modal-rating"></span>
+                        <span id="modal-rating-text" class="text-gray-600 ml-2"></span>
+                    </div>
+                    <p id="modal-description" class="text-gray-600 mb-4"></p>
+                    <div class="flex items-end gap-2 mb-4">
+                        <span id="modal-price" class="text-green-600 font-bold text-3xl"></span>
+                        <span id="modal-original-price" class="text-gray-400 text-lg line-through"></span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">Harga per hari</p>
+                    <p id="modal-stock" class="text-gray-700 font-medium mb-6"></p>
+
+                    <div class="flex items-center gap-4 mb-6">
+                        <label for="quantity" class="text-gray-700 font-semibold">Jumlah:</label>
+                        <div class="flex items-center border border-gray-300 rounded-lg">
+                            <button class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-l-lg" onclick="updateQuantity(-1)">-</button>
+                            <span id="quantity-value" class="px-4 py-1 font-semibold">1</span>
+                            <button class="px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-r-lg" onclick="updateQuantity(1)">+</button>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
+                        <i class="fas fa-shopping-cart mr-2"></i> Tambahkan ke Keranjang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-xl mb-4 text-white flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear Rentals
+                </h4>
+                <p class="text-sm mb-4">Menyediakan perlengkapan camping berkualitas untuk petualangan Anda.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Menu</h4>
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Beranda</a></li>
+                    <li><a href="alat.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Alat</a></li>
+                    <li><a href="paket.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket</a></li>
+                    <li><a href="tentang.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Tentang Kami</a></li>
+                    <li><a href="kontak.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Layanan</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Sewa Alat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket Camping</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Pengiriman</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Bantuan</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Kontak</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mr-3 mt-1 text-green-500"></i>
+                        <span>Jl. Camping No. 123, Jakarta Selatan, Indonesia</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt mr-3 text-green-500"></i>
+                        <span>+62 21 123 4567</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-green-500"></i>
+                        <span>info@campgear.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-12 pt-8 border-t border-gray-700 text-center text-sm">
+            <p>&copy; 2025 CampGear Rentals. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Category filter buttons
+        const categoryFilters = document.querySelectorAll('.category-filter');
+        
+        categoryFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                categoryFilters.forEach(f => {
+                    f.classList.remove('active', 'bg-green-600', 'text-white');
+                    f.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+                });
+                
+                filter.classList.add('active', 'bg-green-600', 'text-white');
+                filter.classList.remove('bg-white', 'border', 'border-gray-300', 'text-gray-700');
+            });
+        });
+        
+        // Sticky sidebar
+        const sidebar = document.querySelector('.sticky-sidebar');
+        
+        window.addEventListener('scroll', () => {
+            if (sidebar) {
+                const scrollTop = window.scrollY;
+                sidebar.style.top = scrollTop > 100 ? '6rem' : '8rem';
+            }
+        });
+        
+        // Modal Fungsionalitas
+        const modal = document.getElementById('product-modal');
+        const quantityValue = document.getElementById('quantity-value');
+        let currentQuantity = 1;
+
+        function formatRupiah(number) {
+            return `Rp ${number.toLocaleString('id-ID')}`;
+        }
+
+        function openModal(product) {
+            document.getElementById('modal-image').src = product.image;
+            document.getElementById('modal-name').textContent = product.name;
+            document.getElementById('modal-description').textContent = product.description;
+            
+            // Format harga
+            document.getElementById('modal-price').textContent = formatRupiah(product.price);
+            if (product.originalPrice) {
+                document.getElementById('modal-original-price').textContent = formatRupiah(product.originalPrice);
+            } else {
+                document.getElementById('modal-original-price').textContent = '';
+            }
+            
+            // Rating
+            const ratingContainer = document.getElementById('modal-rating');
+            ratingContainer.innerHTML = '';
+            const fullStars = Math.floor(product.rating);
+            const hasHalfStar = (product.rating % 1) !== 0;
+            for (let i = 0; i < fullStars; i++) {
+                ratingContainer.innerHTML += '<i class="fas fa-star text-yellow-400 text-sm"></i>';
+            }
+            if (hasHalfStar) {
+                ratingContainer.innerHTML += '<i class="fas fa-star-half-alt text-yellow-400 text-sm"></i>';
+            }
+            document.getElementById('modal-rating-text').textContent = `${product.rating}`;
+
+            document.getElementById('modal-stock').textContent = `Stok Tersedia: ${product.stock} Unit`;
+            
+            modal.style.display = 'flex';
+            currentQuantity = 1;
+            quantityValue.textContent = currentQuantity;
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function updateQuantity(change) {
+            currentQuantity += change;
+            if (currentQuantity < 1) {
+                currentQuantity = 1;
+            }
+            quantityValue.textContent = currentQuantity;
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

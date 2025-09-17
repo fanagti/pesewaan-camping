@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - CampGear Rentals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            background-color: #f7fafc;
+        }
+        
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+        }
+        
+        .sticky-header.scrolled {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: #16a34a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .mobile-menu {
+            transition: all 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+        }
+        
+        .mobile-menu.open {
+            max-height: 300px;
+        }
+
+        /* Gaya untuk Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .modal.open {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal.open .modal-content {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="sticky-header bg-white">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <a href="index.html" class="text-green-600 font-bold text-2xl flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear
+                </a>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Beranda</a>
+                <a href="alat.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Alat</a>
+                <a href="paket.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Paket</a>
+                <a href="tentang-kami.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Tentang Kami</a>
+                <a href="kontak.html" class="text-gray-600 hover:text-green-600 font-medium transition-colors">Kontak</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="#" class="hidden md:block text-gray-600 hover:text-green-600">
+                    <i class="fas fa-search text-lg"></i>
+                </a>
+                <a href="keranjang.html" class="text-green-600 font-bold relative">
+                    <i class="fas fa-shopping-cart text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </a>
+                <a href="#" class="hidden md:block bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    Masuk
+                </a>
+                <button id="menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-white shadow-md">
+            <div class="container mx-auto px-6 py-3">
+                <a href="index.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Beranda</a>
+                <a href="alat.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Alat</a>
+                <a href="paket.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Paket</a>
+                <a href="tentang-kami.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Tentang Kami</a>
+                <a href="kontak.html" class="block py-3 text-gray-600 hover:text-green-600 font-medium border-b border-gray-100">Kontak</a>
+                <div class="flex justify-between py-4">
+                    <a href="#" class="text-gray-600 hover:text-green-600">
+                        <i class="fas fa-search text-lg"></i>
+                    </a>
+                    <a href="keranjang.html" class="text-green-600 relative">
+                        <i class="fas fa-shopping-cart text-lg"></i>
+                        <span class="absolute -top-2 -right-2 bg-green-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                    <a href="#" class="bg-green-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                        Masuk
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-10 min-h-screen">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-10">Keranjang Belanja Anda</h1>
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-3/4">
+                <div id="cart-items" class="bg-white rounded-xl shadow-lg p-6 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-center justify-between border-b pb-4 last:border-b-0 last:pb-0">
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Tenda Camping" class="w-24 h-24 object-cover rounded-md">
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800">Tenda Camping Otomatis</h3>
+                                <p class="text-gray-600 text-sm">per hari: Rp 120.000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 mt-4 sm:mt-0">
+                            <div class="flex items-center border border-gray-300 rounded-lg">
+                                <button class="qty-minus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-l-lg">-</button>
+                                <span class="qty-value px-4 py-1">1</span>
+                                <button class="qty-plus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-r-lg">+</button>
+                            </div>
+                            <span class="item-price text-green-600 font-bold w-24 text-center">Rp 120.000</span>
+                            <button class="remove-item text-red-500 hover:text-red-700 transition">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row items-center justify-between border-b pb-4 last:border-b-0 last:pb-0">
+                        <div class="flex items-center gap-4">
+                            <img src="https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Sleeping Bag" class="w-24 h-24 object-cover rounded-md">
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-800">Sleeping Bag Ultralight</h3>
+                                <p class="text-gray-600 text-sm">per hari: Rp 65.000</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 mt-4 sm:mt-0">
+                            <div class="flex items-center border border-gray-300 rounded-lg">
+                                <button class="qty-minus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-l-lg">-</button>
+                                <span class="qty-value px-4 py-1">2</span>
+                                <button class="qty-plus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-r-lg">+</button>
+                            </div>
+                            <span class="item-price text-green-600 font-bold w-24 text-center">Rp 130.000</span>
+                            <button class="remove-item text-red-500 hover:text-red-700 transition">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <a href="alat.html" class="text-green-600 font-semibold hover:underline">
+                        <i class="fas fa-chevron-left mr-2"></i> Lanjutkan Belanja
+                    </a>
+                    <button class="bg-gray-200 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-300 transition">
+                        Perbarui Keranjang
+                    </button>
+                </div>
+            </div>
+            
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Ringkasan Pesanan</h2>
+                    <div class="space-y-4 text-gray-700">
+                        <div class="flex justify-between">
+                            <span>Subtotal</span>
+                            <span id="subtotal" class="font-semibold">Rp 250.000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Biaya Pengiriman</span>
+                            <span id="shipping-cost" class="font-semibold">Rp 20.000</span>
+                        </div>
+                        <div class="border-t border-gray-300 pt-4 flex justify-between font-bold text-lg text-gray-800">
+                            <span>Total</span>
+                            <span id="total-price" class="text-green-600">Rp 270.000</span>
+                        </div>
+                    </div>
+                    
+                    <button id="checkout-button" class="mt-6 block w-full text-center bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
+                        Buat Pesanan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-12">
+        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h4 class="font-bold text-xl mb-4 text-white flex items-center">
+                    <i class="fas fa-campground mr-2"></i> CampGear Rentals
+                </h4>
+                <p class="text-sm mb-4">Menyediakan perlengkapan camping berkualitas untuk petualangan Anda.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Menu</h4>
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Beranda</a></li>
+                    <li><a href="alat.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Alat</a></li>
+                    <li><a href="paket.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket</a></li>
+                    <li><a href="tentang-kami.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Tentang Kami</a></li>
+                    <li><a href="kontak.html" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Layanan</h4>
+                <ul class="space-y-3">
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Sewa Alat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Paket Camping</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Pengiriman</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> Bantuan</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors flex items-center"><i class="fas fa-chevron-right text-xs mr-2"></i> FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-lg mb-4 text-white">Kontak</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-map-marker-alt mr-3 mt-1 text-green-500"></i>
+                        <span>Jl. Camping No. 123, Jakarta Selatan, Indonesia</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone-alt mr-3 text-green-500"></i>
+                        <span>+62 21 123 4567</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope mr-3 text-green-500"></i>
+                        <span>info@campgear.com</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    
+    <a href="#" id="back-to-top" class="back-to-top hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <button id="close-order-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Formulir Pemesanan</h2>
+            <form id="order-form" class="space-y-4">
+                <div>
+                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="nik" class="block text-sm font-medium text-gray-700">NIK (Nomor Induk Kependudukan)</label>
+                    <input type="text" id="nik" name="nik" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div>
+                    <label for="jaminan" class="block text-sm font-medium text-gray-700">Pilih Jaminan</label>
+                    <select id="jaminan" name="jaminan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                        <option value="ktp">KTP</option>
+                        <option value="sim">SIM</option>
+                        <option value="kartu-pelajar">Kartu Pelajar</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="tanggal-pengambilan" class="block text-sm font-medium text-gray-700">Tanggal Pengambilan</label>
+                    <input type="date" id="tanggal-pengambilan" name="tanggal-pengambilan" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500">
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
+                        Lanjutkan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="pickup-modal" class="modal">
+        <div class="modal-content text-center">
+            <button id="close-pickup-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+            <i class="fas fa-check-circle text-6xl text-green-500 mb-4 animate-bounce"></i>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Pesanan Anda Berhasil Dibuat!</h2>
+            <p class="text-gray-600 mb-6">Berikut adalah cara pengambilan pesanan Anda:</p>
+            <div class="space-y-4 text-left">
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">1</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Datang ke Tempat Sewa Kami</h4>
+                        <p class="text-gray-600 text-sm">Datang ke lokasi kami pada tanggal yang sudah Anda pilih.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">2</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Verifikasi Data dan Pembayaran</h4>
+                        <p class="text-gray-600 text-sm">Tunjukkan NIK dan lakukan pembayaran penuh kepada petugas kami.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold mr-4 flex-shrink-0">3</div>
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Serahkan Jaminan & Ambil Produk</h4>
+                        <p class="text-gray-600 text-sm">Serahkan dokumen jaminan Anda dan nikmati produk sewa kami.</p>
+                    </div>
+                </div>
+            </div>
+            <a href="index.html" class="mt-6 inline-block w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <script>
+        // Event listener untuk header sticky dan back-to-top button
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.sticky-header');
+            const backToTopBtn = document.getElementById('back-to-top');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                backToTopBtn.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Event listener untuk menu mobile
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Event listener untuk back-to-top button
+        document.getElementById('back-to-top').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // JavaScript untuk fungsionalitas keranjang dan modal
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const checkoutButton = document.getElementById('checkout-button');
+            const orderModal = document.getElementById('order-modal');
+            const closeModalBtn = document.getElementById('close-order-modal-btn');
+            const orderForm = document.getElementById('order-form');
+            const pickupModal = document.getElementById('pickup-modal');
+            const closePickupModalBtn = document.getElementById('close-pickup-modal-btn');
+            
+            // Simulasikan data keranjang
+            let cartItems = [
+                {
+                    id: 1,
+                    name: "Tenda Camping Otomatis",
+                    price: 120000,
+                    image: "https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
+                    quantity: 1
+                },
+                {
+                    id: 2,
+                    name: "Sleeping Bag Ultralight",
+                    price: 65000,
+                    image: "https://images.unsplash.com/photo-1595877244574-e90ce41ce089?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+                    quantity: 2
+                },
+                {
+                    id: 3,
+                    name: "Kompor Portable Mini",
+                    price: 85000,
+                    image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1152&q=80",
+                    quantity: 1
+                }
+            ];
+
+            function formatRupiah(number) {
+                return `Rp ${number.toLocaleString('id-ID')}`;
+            }
+
+            function renderCart() {
+                cartItemsContainer.innerHTML = '';
+                let subtotal = 0;
+
+                cartItems.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+
+                    const itemHtml = `
+                        <div class="flex flex-col sm:flex-row items-center justify-between border-b pb-4 last:border-b-0 last:pb-0" data-item-id="${item.id}">
+                            <div class="flex items-center gap-4">
+                                <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-cover rounded-md">
+                                <div>
+                                    <h3 class="font-semibold text-lg text-gray-800">${item.name}</h3>
+                                    <p class="text-gray-600 text-sm">per hari: ${formatRupiah(item.price)}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 mt-4 sm:mt-0">
+                                <div class="flex items-center border border-gray-300 rounded-lg">
+                                    <button class="qty-minus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-l-lg" data-action="minus">-</button>
+                                    <span class="qty-value px-4 py-1">${item.quantity}</span>
+                                    <button class="qty-plus px-3 py-1 text-gray-600 hover:bg-gray-200 transition rounded-r-lg">+</button>
+                                </div>
+                                <span class="item-price text-green-600 font-bold w-24 text-center">${formatRupiah(itemTotal)}</span>
+                                <button class="remove-item text-red-500 hover:text-red-700 transition" data-action="remove">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    cartItemsContainer.innerHTML += itemHtml;
+                });
+
+                document.getElementById('subtotal').textContent = formatRupiah(subtotal);
+                
+                // Tambahkan biaya pengiriman (contoh statis)
+                const shippingCost = 20000;
+                document.getElementById('shipping-cost').textContent = formatRupiah(shippingCost);
+                
+                const total = subtotal + shippingCost;
+                document.getElementById('total-price').textContent = formatRupiah(total);
+            }
+
+            cartItemsContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (!button) return;
+
+                const action = button.dataset.action;
+                const itemId = parseInt(button.closest('[data-item-id]').dataset.itemId);
+                const item = cartItems.find(i => i.id === itemId);
+
+                if (!item) return;
+
+                if (action === 'plus') {
+                    item.quantity++;
+                } else if (action === 'minus') {
+                    if (item.quantity > 1) {
+                        item.quantity--;
+                    }
+                } else if (action === 'remove') {
+                    cartItems = cartItems.filter(i => i.id !== itemId);
+                }
+
+                renderCart();
+            });
+
+            renderCart();
+
+            // Fungsionalitas Modal Pertama (Form Pemesanan)
+            checkoutButton.addEventListener('click', () => {
+                orderModal.classList.add('open');
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                orderModal.classList.remove('open');
+            });
+
+            orderModal.addEventListener('click', (e) => {
+                if (e.target === orderModal) {
+                    orderModal.classList.remove('open');
+                }
+            });
+
+            // Fungsionalitas Modal Kedua (Cara Pengambilan)
+            orderForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                orderModal.classList.remove('open');
+                pickupModal.classList.add('open');
+            });
+
+            closePickupModalBtn.addEventListener('click', () => {
+                pickupModal.classList.remove('open');
+            });
+
+            pickupModal.addEventListener('click', (e) => {
+                if (e.target === pickupModal) {
+                    pickupModal.classList.remove('open');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
